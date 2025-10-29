@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,  maximum-scale=1.0, user-scalable=no">
+    <title>Testy Hotel & Apartments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+       * {
+          font-family: 'Raleway', sans-serif;
+       }
+       body {
+          background-image: linear-gradient(310deg, #6B7066, #8B5E3C);
+          margin: 5px 10px;
+          color: white;
+       }
+       body.modal-open {
+          overflow: hidden;
+       }
+       .nav-custom {
+          margin: -5px -8px 5px;
+          border-bottom-left-radius: 7px;
+          border-bottom-right-radius: 7px;
+       }
+       .popup-container {
+          display: flex;
+          flex-flow: column nowrap;
+          width: 92%;
+          height: auto;
+          background-color: #727272;
+          padding: .7rem;
+          border-radius: 7px;
+          position: fixed;
+          top: -150%;
+          left: 50%;
+          opacity: 0;
+          transition: top 0ms ease-in-out 200ms,
+                      opacity 20ms ease-in-out 0ms,
+                      transform 200ms ease-in-out 0ms;
+       }
+       .popup-container.active {
+          top: 50%;
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+          transition: top 0ms ease-in-out 0ms,
+                      opacity 20ms ease-in-out 0ms,
+                      transform 200ms ease-in-out 0ms;
+          z-index: 14;
+      }
+       .header {
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: space-between;
+          margin-bottom: .8rem;
+       }
+       .x-btn {
+          outline: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 15px;
+          border: 0px;
+          line-height: 5px;
+       }
+       .forms {
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 12px;
+          justify-content: center;
+       }
+       .name-email {
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 12px;
+       }
+       input[type="text"], #room-opts{
+          padding: 6px;
+          outline: unset;
+          border-radius: 5px;
+          border: unset;
+       }
+       input[type="text"]:active #room-opts:active {
+          outline: #6B7066;
+       }
+       .btn {
+          width: auto;
+          height: 25px;
+          line-height: 19px;
+       }
+       .btn:hover {
+          background-color: #748F46;
+          color: white;
+       }
+       .toggle-book-btn{
+          width: auto;
+          height: 2rem;
+          border-radius: .3rem;
+          color: white;
+          background-image: linear-gradient(to left, #6B7066, #8B5E3C);
+          border: 0.2px solid black;
+          font-weight: 600;
+       }
+       .toggle-book-btn:hover {
+          background-image: unset;
+          background-color: #9E6019;
+          color: #202020;
+          transition: background-color 250ms ease-in-out 20ms;      }
+       .wise {
+          background-color: #69D100;
+          color: black;
+       }
+       .paypal {
+          background-color:#008FF0;
+          color: black;
+       }
+       .payment-method {
+          align-self: center;
+       }
+       .room-type {
+          align-self: center;
+       }
+       .fa-shake {
+          animation-iteration-count: 5;
+       }
+       .img-container {
+          width: 2.3rem;
+          height: 2.3rem;
+          object-fit: cover;
+          border-radius: 18px;
+       }
+       .business-name {
+          color: #000;
+          margin-left: -25px;
+          font-family: 'Nunito', sans-serif;
+          font-weight: 700;
+       }
+       #room-opts option[value=""] {
+          display: none;
+       }
+       .book-btn {
+          width: 100%;
+          height: 2rem;
+          border-radius: 12px;
+          color: #fff;
+          border: unset;
+          font-weight: 600;
+          background-image: linear-gradient(to left, #6B7066, #8B5E3C);
+       }
+       #form-notify {
+          align-self: center;
+       }
+       .doc-flow-btns {
+          width: auto;
+          height: 2rem;
+          border-radius: .3rem;
+          color: black;
+          background-color: #FFFFFF;
+          border: 0.2px solid black;
+          font-weight: 600;
+       }
+       .doc-flow-btns:hover {
+          background-color: #88952C;
+          color: white;
+       }
+       .doc-flow-btns-book {
+          width: auto;
+          height: 2rem;
+          border-radius: .3rem;
+          color: black;
+          background-color: #FFFFFF;
+          border: 0.2px solid black;
+          font-weight: 600;
+       }
+       .doc-flow-btns-book:hover {
+          background-color: #88952C;
+          color: white;
+       }
+       .hero {
+          margin: .9rem .86rem 0rem;
+       }
+       .hero-inner {
+          display: block;
+          gap: .47rem;
+       }
+       .hero-ctas {
+          display: flex;
+          gap: 1.3rem;
+          justify-content: center;
+       }
+       .hero-features {
+          margin-top: 10px;
+          margin-left: -11px;
+       }
+       .reviews {
+          padding: 0px 5px;
+       }
+       .review-font {
+          font-size: 16px;
+          margin-top: unset;
+       }
+       .user-dp {
+          width: 2.2rem;
+          height: 2.2rem;
+          border-radius: 9px;
+       }
+       .card-style {
+          box-shadow: 0px 0px 7px #D6D6D6;
+          margin-top: 1.2rem;
+          margin-bottom: 1.2rem;
+       }
+       .footer {
+          margin: 12px 10px;
+          display: flex;
+          margin: 14px;
+          flex-flow: column nowrap;
+          gap: 16px;
+          height: auto;
+          color: #000;
+       }
+       .footer div strong {
+          font-family:'Nunito', sans-serif;
+          font-size: 28px;
+          font-weight: 800;
+          padding-left: 4.5rem;
+       }
+       footer {
+          background-color: #fff;
+          margin: 36px -11px -14px;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+          background-image: linear-gradient(to bottom, rgba(255, 255, 250, .53), rgba(255, 252, 253, .8652), rgba(255, 252, 253, 1)), url('images/footer.jpg');
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
+          padding: 160px 8px 5px;
+       }
+       footer a {
+          text-decoration: none;
+          color: #333800;
+       }
+       footer div ul {
+          list-style: none;
+       }
+       footer div ul li {
+          position: relative;
+          display: flex;
+          flex-flow: column nowrap;
+          left: -28px;
+       }
+       .technical-listings {
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 13px;
+          font-family: 'Nunito', sans-serif;
+       }
+       .carousel-style {
+          border-radius: 6px;
+          width: 100%;
+          height: auto;
+          box-shadow: 0px 0px 7px #D6D6D6;
+          margin-bottom: 1.3rem;
+       }
+       .cta {
+          width: 100%;
+          display: flex;
+          flex-flow: column nowrap;
+          align-items: center;
+          gap: 5px;
+       }
+       .cta-btn {
+          width: 66%;
+          border-radius: 12px;
+       }
+       .cta-ask {
+          width: 76%;
+       }
+       .description-para {
+          font-size: 16px;
+       }
+       .service-style {
+          padding: 9px 10px;
+          margin: 1.2rem 0rem;
+          background-color: #D9D9D9;
+          color: #000;
+          border-radius: 6px;
+          box-shadow: 0px 1px 7px #212121;
+       }
+       .card-desc {
+          border-radius: 6px 6px 14px 14px;
+          background-color: #fff;
+          margin: -8px -10px 0px;
+          padding: 8px 12px .015px;
+          line-height: 20px;
+       }
+       .service-carousel {
+          margin: .95rem -.3rem -1.5rem;
+          transition: height 4s ease-in-out 28ms;
+       }
+       .service-images {
+          border-radius: 14px 14px 6px 6px;
+       }
+    </style>
+</head>
+<body>
+   
+   <!--The navbar section-->
+<nav class="navbar navbar-expand-lg bg-body-tertiary nav-custom">
+  <div class="container-fluid">
+    <img src="images/logo.jpg" class="img-container" alt="An image of the Testy Apartments and Hotels logo, green and in lower case \'t\'"><span class="business-name">Testy Hotels</span>
+    <button class="toggle-book-btn" type="button" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span>Book Now</span>
+    </button>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa-regular fa-compass fa-shake fa-1x"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="rooms.html">Rooms</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="services.html">Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="contact.html">Contact Us</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+   <!--Book now modal-->
+   <div class="popup-container">
+      <div class="header">
+         <h5>Room Booking</h5>
+         <button class="x-btn">&times;</button>
+      </div>
+      <form class="forms">
+         <div class="name-email">
+            <input type="text" id="fullName" placeholder="Full name">
+            <input type="text" id="email" placeholder="Email Address">
+         </div>
+         <div class="room-type">
+            <label for="room-opts">Room type:&nbsp;&nbsp;&nbsp;</label>
+            <select id="room-opts" name="room-opts">
+               <option value="" disabled selected> Please Select</option>
+               <option value="600">Individual @ K600</option>
+               <option value="1100">Dual @ K1,100</option>
+               <option value="2000">Friends Suite @ K2,000</option>
+               <option value="5500">Family Suite @ K5,500</option>
+            </select>
+         </div>
+         <div class="payment-method">
+            <label>Make payment:</label>
+            <a class="btn wise" type="button" href="https://wise.com/us/">Wise</a>
+            <a class="btn paypal" type="button" href="https://www.paypal.com/zm/home">Paypal</a>
+         </div>
+            <button class = "btn book-btn" id="bookBtn">Book</button>
+            <p id="form-notify"></p>
+      </form>
+   </div>
+   
+   <!--Hero Section-->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Services to Expect</h1>
+    <p class="lead">Rooms, food, & Internet services.</p>
+  </div>
+</section>
+
+   <!--Service images-->
+<div id="carouselExampleAutoplaying" class="carousel carousel-fade carousel-dark" data-bs-ride="carousel" data-bs-interval="3880">
+  <div class="carousel-inner carousel-style">
+    <div class="carousel-item active">
+      <img src="images/services/wifi.jpg" class="d-block w-100" alt="The Lot">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/aircon.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/breakfast3.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+   <!--The "body"-->
+<section class="hero service-style">
+  <div class="hero-inner card-desc">
+    <h3>Clean Rooms</h3>
+    <p class="description-para">Every room is thoroughly cleaned and refreshed daily, ensuring a hygienic and comfortable stay from check-in to check-out.</p>
+  </div>
+<div id="carouselExampleAutoplaying" class="carousel carousel-slide carousel-dark service-carousel" data-bs-ride="carousel" data-bs-interval="3080">
+  <div class="carousel-inner carousel-style service-images">
+    <div class="carousel-item active">
+      <img src="images/services/cleaning.jpg" class="d-block w-100" alt="The Lot">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/cleaning2.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/cleaning3.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+  </div>
+</div>
+</section>
+<section class="hero service-style">
+  <div class="hero-inner card-desc">
+    <h3>Free Wi-Fi</h3>
+    <p class="description-para">Reliable high-speed internet in all rooms and public areas, keeping you connected for work or leisure.</p>
+  </div>
+<div id="carouselExampleAutoplaying" class="carousel carousel-slide carousel-dark service-carousel" data-bs-ride="carousel" data-bs-interval="3180">
+  <div class="carousel-inner carousel-style service-images">
+    <div class="carousel-item active">
+      <img src="images/services/wifi2.jpg" class="d-block w-100" alt="The Lot">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/wifi3.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/wifi4.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+  </div>
+</div>
+</section>
+<section class="hero service-style">
+  <div class="hero-inner card-desc">
+    <h3>Food</h3>
+    <p class="description-para">Freshly prepared local and Sub-saharan meals available throughout the day, served hot and on time.</p>
+  </div>
+<div id="carouselExampleAutoplaying" class="carousel carousel-slide carousel-dark service-carousel" data-bs-ride="carousel" data-bs-interval="3180">
+  <div class="carousel-inner carousel-style service-images">
+    <div class="carousel-item active">
+      <img src="images/services/food service.jpg" class="d-block w-100" alt="The Lot">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/food service2.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+  </div>
+</div>
+</section>
+<section class="hero service-style">
+  <div class="hero-inner card-desc">
+    <h3>Drinks & Breakfast</h3>
+    <p class="description-para">Complimentary breakfast each morning and a selection of beverages available from the hotel bar or through room service.</p>
+  </div>
+<div id="carouselExampleAutoplaying" class="carousel carousel-slide carousel-dark service-carousel" data-bs-ride="carousel" data-bs-interval="3050">
+  <div class="carousel-inner carousel-style service-images">
+    <div class="carousel-item active">
+      <img src="images/services/breakfast.jpg" class="d-block w-100" alt="The Lot">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/breakfast4.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+  </div>
+</div>
+</section>
+<section class="hero service-style">
+  <div class="hero-inner card-desc">
+    <h3>Free Parking</h3>
+    <p class="description-para">Secure on-site parking with 24-hour surveillance, available to all guests at no extra cost.</p>
+  </div>
+<div id="carouselExampleAutoplaying" class="carousel carousel-slide carousel-dark service-carousel" data-bs-ride="carousel" data-bs-interval="3080">
+  <div class="carousel-inner carousel-style service-images">
+    <div class="carousel-item active">
+      <img src="images/services/free parking.jpg" class="d-block w-100" alt="The Lot">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/free parking2.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+  </div>
+</div>
+</section>
+<section class="hero service-style">
+  <div class="hero-inner card-desc">
+    <h3>Air Conditioning</h3>
+    <p class="description-para">All rooms feature quiet, efficient air conditioning systems to maintain cool comfort in any weather.</p>
+  </div>
+<div id="carouselExampleAutoplaying" class="carousel carousel-slide carousel-dark service-carousel" data-bs-ride="carousel" data-bs-interval="3150">
+  <div class="carousel-inner carousel-style service-images">
+    <div class="carousel-item active">
+      <img src="images/services/aircon2.jpg" class="d-block w-100" alt="The Lot">
+    </div>
+    <div class="carousel-item">
+      <img src="images/services/aircon3.jpg" class="d-block w-100" alt="A look at the Front">
+    </div>
+  </div>
+</div>
+</section>
+
+
+<section class="cta">
+   <a href="rooms.html" class="doc-flow-btns btn cta-btn">See available Rooms</a>
+   <a href="contact.html" class="doc-flow-btns btn cta-btn cta-ask">Ask us anything</a>
+</section>
+
+   <!--the footer section-->
+<footer>
+   <section class="footer">
+   <div>A Budget Hotel that cares about your needs:<br><strong>Testy Hotel</strong></div>
+   <div>
+      <h5><u>Resources & Help</u></h5>
+      <ul>
+         <li><a href="rooms.html">Rooms</a></li>
+         <li><a href="https://medium.com/@skydancer_/beyond-the-facades-the-historical-layers-of-3-iconic-new-orleans-hotels-55add6edfb20">Blog</a></li>
+         <li><a href="https://portal.zesco.co.zm/services/customer_care">Customer Care</a></li>
+      </ul>
+   </div>
+   <div class="technical-listings">
+      <div>Testy Hotels&copy; 2025 | Testy Enterprises&reg;</div>
+      <div>
+         <p><a href="https://www.termsfeed.com/blog/sample-terms-and-conditions-template/">Terms & Conditions</a> | 
+         <a href="https://www.iubenda.com/en/help/36387-privacy-policy-template">Privacy Policy</a> | <a href="https://regenera.luxury/international-quality-certifications-in-the-hotel-industry-2/">Certifications</a> | <a href="https://www.heritagebelgrade.com/images/hotel-rules-en.pdf">Hotel Guest Safety</a></p>
+      </div>
+   </div>
+   </section>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script>
+//code to open up booking modal
+   document.querySelector(".toggle-book-btn").addEventListener("click", function() {
+      //Freeze and unfreeze scrolling
+      document.body.classList.add("modal-open");
+      document.querySelector(".popup-container").classList.add("active");
+   });
+   
+//code to close booking modal
+   document.querySelector(".x-btn").addEventListener("click", function() {
+      document.body.classList.remove("modal-open");
+      document.querySelector(".popup-container").classList.remove("active");
+   });
+//form validation scripts
+   const fullName = document.getElementById("fullName");
+   const email = document.getElementById("email");
+   let optionsField = document.getElementById("room-opts");
+   let para = document.getElementById("form-notify");
+   para.style.color = "#FF1B00";
+   
+   const bookBtn = document.getElementById("bookBtn").addEventListener("click", (click) => {
+      click.preventDefault();
+      if (fullName.value === "") {
+         para.textContent = "Please type in your full name.";
+      } else if (!email.value.includes("@")) {
+         alert("email is invalid!");
+         para.textContent = "Please type in a valid email.";
+      } else if (optionsField.value === "") {
+         alert("You didn’t choose a room type!");
+         para.textContent = "Please select a room";
+      } else {
+         para.style.color = "#19AC00";
+         para.textContent = "Your Room has been booked! Show us the transaction ID at our reception desk";
+      }
+   });
+   
+</script>
+</body>
+</html>   

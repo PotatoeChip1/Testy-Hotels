@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,  maximum-scale=1.0, user-scalable=no">
+    <title>Testy Hotel & Apartments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+       * {
+          font-family: 'Raleway', sans-serif;
+       }
+       body {
+          background-image: linear-gradient(to bottom, rgba(0, 0, 0, .5), rgba(255, 255, 255, .1)), url('images/cont-backdrop.jpeg');
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center;
+          margin: 5px 10px;
+          color: white;
+       }
+       body.modal-open {
+          overflow: hidden;
+       }
+       .nav-custom {
+          margin: -5px -8px 5px;
+          border-bottom-left-radius: 7px;
+          border-bottom-right-radius: 7px;
+       }
+       .popup-container {
+          display: flex;
+          flex-flow: column nowrap;
+          width: 92%;
+          height: auto;
+          background-color: #727272;
+          padding: .7rem;
+          border-radius: 7px;
+          position: fixed;
+          top: -150%;
+          left: 50%;
+          opacity: 0;
+          transition: top 0ms ease-in-out 200ms,
+                      opacity 20ms ease-in-out 0ms,
+                      transform 200ms ease-in-out 0ms;
+       }
+       .popup-container.active {
+          top: 50%;
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+          transition: top 0ms ease-in-out 0ms,
+                      opacity 20ms ease-in-out 0ms,
+                      transform 200ms ease-in-out 0ms;
+          z-index: 14;
+      }
+       .header {
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: space-between;
+          margin-bottom: .8rem;
+       }
+       .x-btn {
+          outline: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 15px;
+          border: 0px;
+          line-height: 5px;
+       }
+       .forms {
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 12px;
+          justify-content: center;
+       }
+       .name-email {
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 12px;
+       }
+       input[type="text"], #room-opts{
+          padding: 6px;
+          outline: unset;
+          border-radius: 5px;
+          border: unset;
+       }
+       input[type="text"]:active #room-opts:active {
+          outline: #6B7066;
+       }
+       .btn {
+          width: auto;
+          height: 25px;
+          line-height: 19px;
+       }
+       .btn:hover {
+          background-color: #748F46;
+          color: white;
+       }
+       .toggle-book-btn{
+          width: auto;
+          height: 2rem;
+          border-radius: .3rem;
+          color: white;
+          background-image: linear-gradient(to left, #6B7066, #8B5E3C);
+          border: 0.2px solid black;
+          font-weight: 600;
+       }
+       .toggle-book-btn:hover {
+          background-image: unset;
+          background-color: #9E6019;
+          color: #202020;
+          transition: background-color 250ms ease-in-out 20ms;      }
+       .wise {
+          background-color: #69D100;
+          color: black;
+       }
+       .paypal {
+          background-color:#008FF0;
+          color: black;
+       }
+       .payment-method {
+          align-self: center;
+       }
+       .room-type {
+          align-self: center;
+       }
+       .fa-shake {
+          animation-iteration-count: 5;
+       }
+       .img-container {
+          width: 2.3rem;
+          height: 2.3rem;
+          object-fit: cover;
+          border-radius: 18px;
+       }
+       .business-name {
+          color: #000;
+          margin-left: -25px;
+          font-family: 'Nunito', sans-serif;
+          font-weight: 700;
+       }
+       #room-opts option[value=""] {
+          display: none;
+       }
+       .book-btn {
+          width: 100%;
+          height: 2rem;
+          border-radius: 12px;
+          color: #fff;
+          border: unset;
+          font-weight: 600;
+          background-image: linear-gradient(to left, #6B7066, #8B5E3C);
+       }
+       #form-notify {
+          align-self: center;
+       }
+       .doc-flow-btns {
+          width: auto;
+          height: 2rem;
+          border-radius: .3rem;
+          color: black;
+          background-color: #FFFFFF;
+          border: 0.2px solid black;
+          font-weight: 600;
+       }
+       .doc-flow-btns:hover {
+          background-color: #88952C;
+          color: white;
+       }
+       .doc-flow-btns-book {
+          width: auto;
+          height: 2rem;
+          border-radius: .3rem;
+          color: black;
+          background-color: #FFFFFF;
+          border: 0.2px solid black;
+          font-weight: 600;
+       }
+       .doc-flow-btns-book:hover {
+          background-color: #88952C;
+          color: white;
+       }
+       .card-style {
+          box-shadow: 0px 0px 7px #D6D6D6;
+          margin-top: 1.2rem;
+          margin-bottom: 1.2rem;
+       }
+       .contact {
+          display: flex;
+          margin: 0px 14px 14px;
+          flex-flow: column nowrap;
+          gap: 16px;
+          height: auto;
+          color: #000;
+       }
+       .contact div strong {
+          font-family:'Nunito', sans-serif;
+          font-size: 28px;
+          font-weight: 800;
+          padding-left: 4rem;
+       }
+       @keyframes on-screen {
+          0% {
+             opacity: 1;
+          }
+          10% {
+             opacity: 0;
+          }
+          40% {
+             opacity: 0.3;
+          }
+          60% {
+             opacity: 0.6;
+          }
+          90% {
+             opacity: 0.92;
+          }
+          100% {
+             opacity: 1;
+          }
+       }
+       footer {
+          position: absolute;
+          top: 25%;
+          left: 5%;
+          right: 5%;
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 16px;
+          border-radius: 10px;
+          background-image: linear-gradient(to bottom, rgba(255, 255, 255, .9), rgba(255, 252, 253, .4));
+          padding: 60px 8px 5px;
+          box-shadow: 0px 0px 7px #CFCFCF;
+          animation: on-screen 1.4s 1 ease-in-out 100ms;
+       }
+       footer a {
+          text-decoration: none;
+          color: #151515;
+          font-family: 'Nunito', sans-serif;
+       }
+       footer div ul {
+          list-style: none;
+          background-color: #8F9B3D;
+          border-radius: 6px;
+          border: .772px solid #EEEEEE;
+          box-shadow: 0px 0px 6px #DFDFDF;
+       }
+       footer div ul li {
+          position: relative;
+          display: flex;
+          flex-flow: column nowrap;
+          left: -19px;
+          width: 100%;
+          border-bottom: .5px solid #DBDBDB;
+       }
+       .technical-listings {
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 13px;
+          font-family: 'Nunito', sans-serif;
+       }
+       .cta {
+          width: 100%;
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+          margin-bottom: .9rem;
+       }
+       .cta-btn {
+          width: 45%;
+          border-radius: 12px;
+       }
+       h6 {
+          font-weight: 700;
+          color: white;
+       }
+       .socials a {
+          color: unset;
+       }
+       .socials {
+          display: flex;
+          flex-flow: row nowrap;
+          gap: 16px;
+          justify-content: space-around;
+          background-color: #8F9B3D;
+          padding: 10px 7px;
+          margin: -30px -8px 13px;
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+       }
+       .fa-flip {
+          animation-iteration-count: 6;
+       }
+       .side-by-side {
+          display: flex;
+          flex-flow: row nowrap;
+          overflow-x: auto;
+          gap: 15px;
+          padding: 9px 16px 0px;
+          align-items: center;
+          background-color: #AF7123;
+          margin-left: -22px;
+          margin-right: -22px;
+          border-top-right-radius: 8px;
+          border-top-left-radius: 8px;
+       }
+       .area {
+          margin-top: -36px;
+       }
+    </style>
+</head>
+<body>
+   
+   <!--The navbar section-->
+<nav class="navbar navbar-expand-lg bg-body-tertiary nav-custom">
+  <div class="container-fluid">
+    <img src="images/logo.jpg" class="img-container" alt="An image of the Testy Apartments and Hotels logo, green and in lower case \'t\'"><span class="business-name">Testy Hotels</span>
+    <button class="toggle-book-btn" type="button" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span>Book Now</span>
+    </button>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa-regular fa-compass fa-shake fa-1x"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="rooms.html">Rooms</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="services.html">Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="contact.html">Contact Us</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+   <!--Book now modal-->
+   <div class="popup-container">
+      <div class="header">
+         <h5>Room Booking</h5>
+         <button class="x-btn">&times;</button>
+      </div>
+      <form class="forms">
+         <div class="name-email">
+            <input type="text" id="fullName" placeholder="Full name">
+            <input type="text" id="email" placeholder="Email Address">
+         </div>
+         <div class="room-type">
+            <label for="room-opts">Room type:&nbsp;&nbsp;&nbsp;</label>
+            <select id="room-opts" name="room-opts">
+               <option value="" disabled selected> Please Select</option>
+               <option value="600">Individual @ K600</option>
+               <option value="1100">Dual @ K1,100</option>
+               <option value="2000">Friends Suite @ K2,000</option>
+               <option value="5500">Family Suite @ K5,500</option>
+            </select>
+         </div>
+         <div class="payment-method">
+            <label>Make payment:</label>
+            <a class="btn wise" type="button" href="https://wise.com/us/">Wise</a>
+            <a class="btn paypal" type="button" href="https://www.paypal.com/zm/home">Paypal</a>
+         </div>
+            <button class = "btn book-btn" id="bookBtn">Book</button>
+            <p id="form-notify"></p>
+      </form>
+   </div>
+
+   <!--Contact Us-->
+<footer>
+   <section class="contact">
+   <div class="area"><strong>Testy Hotel</strong><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Experience comfort at a low cost
+   </div>
+   <div class="side-by-side">
+   <div>
+      <h6>Email & Phone</h6>
+      <ul>
+         <li><a href="mailto:no-reply@accounts.google.com">Email us</a></li>
+         <li><a href="tel: 077 8648661">Call Us</a></li>
+         <li><a href="sms: 077 8648661">Message</a></li>
+      </ul>
+   </div>
+   <div>
+      <h6>Our Location</h6>
+      <ul>
+         <li><a>Plot #2, Livingstone Way, Livingstone</a></li>
+         <li><a href="https://maps.google.com"><i class="fa-solid fa-map-location-dot fa-flip"></i>&nbsp;&nbsp;View on Maps</a></li>
+      </ul>
+   </div>
+   </div>
+   </section>
+   <section class="socials">
+      <a href="https://www.facebook.com"><i class="fa-brands fa-facebook fa-2x"></i></a>
+      <a href="https://www.instagram.com"><i class="fa-brands fa-instagram fa-2x"></i></a>
+      <a href="https://www.airbnb.io"><i class="fa-brands fa-airbnb fa-2x"></i></a>
+      <a href="https://www.linkedin.com"><i class="fa-brands fa-linkedin fa-2x"></i></a>
+   </section>
+   <section class="cta">
+      <button id="bottomBook" class="doc-flow-btns btn cta-btn">Stay with Us</button>
+      <a href="https://www.whatsapp.com" class="doc-flow-btns btn cta-btn">WhatsApp Us</a>
+   </section>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script>
+//code to open up booking modal
+   document.querySelector(".toggle-book-btn").addEventListener("click", function() {
+      //Freeze and unfreeze scrolling
+      document.body.classList.add("modal-open");
+      document.querySelector(".popup-container").classList.add("active");
+   });
+   document.getElementById("bottomBook").addEventListener("click", () => {
+      document.body.classList.add("modal-open");
+      document.querySelector(".popup-container").classList.add("active");
+   });
+   
+//code to close booking modal
+   document.querySelector(".x-btn").addEventListener("click", function() {
+      document.body.classList.remove("modal-open");
+      document.querySelector(".popup-container").classList.remove("active");
+   });
+//form validation scripts
+   const fullName = document.getElementById("fullName");
+   const email = document.getElementById("email");
+   let optionsField = document.getElementById("room-opts");
+   let para = document.getElementById("form-notify");
+   para.style.color = "#FF1B00";
+   
+   const bookBtn = document.getElementById("bookBtn").addEventListener("click", (click) => {
+      click.preventDefault();
+      if (fullName.value === "") {
+         para.textContent = "Please type in your full name.";
+      } else if (!email.value.includes("@")) {
+         alert("email is invalid!");
+         para.textContent = "Please type in a valid email.";
+      } else if (optionsField.value === "") {
+         alert("You didn’t choose a room type!");
+         para.textContent = "Please select a room";
+      } else {
+         para.style.color = "#19AC00";
+         para.textContent = "Your Room has been booked! Show us the transaction ID at our reception desk";
+      }
+   });
+   
+</script>
+</body>
+</html>   
